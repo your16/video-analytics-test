@@ -1,6 +1,6 @@
 #include "detection_filter.h"
 
-DetectionFilter::DetectedObj::DetectedObj(cv::Point point)
+DetectionFilter::DetectableObj::DetectableObj(cv::Point point)
 {
 	posBuffer.push_back(point);
 }
@@ -13,7 +13,7 @@ DetectionFilter::DetectionFilter(int erodeIterations, cv::Mat erodeStruct,
 void DetectionFilter::FrameProcessing(cv::Mat& frame, bool debug)
 {
 	cv::Mat proc;
-	std::vector<DetectedObj> frameObjs;
+	std::vector<DetectableObj> frameObjs;
 	if (_sub.empty()) _sub = frame.clone();
 
 	cv::absdiff(_sub, frame, proc);
@@ -31,7 +31,7 @@ void DetectionFilter::FrameProcessing(cv::Mat& frame, bool debug)
 		_DebugInfo(frame);
 }
 
-void DetectionFilter::_FindObjects(const cv::Mat& mat, std::vector<DetectedObj>& frameObjs)
+void DetectionFilter::_FindObjects(const cv::Mat& mat, std::vector<DetectableObj>& frameObjs)
 {
 	if (!frameObjs.empty()) frameObjs.clear();
 
@@ -51,14 +51,14 @@ void DetectionFilter::_FindObjects(const cv::Mat& mat, std::vector<DetectedObj>&
 				cv::convexHull(contour, hull);
 				cv::Rect rect = cv::boundingRect(hull);
 				if (rect.width >= MIN_RECT_W && rect.height >= MIN_RECT_H)
-					frameObjs.emplace_back(DetectedObj(cv::Point(rect.x + (rect.width * 0.5),
+					frameObjs.emplace_back(DetectableObj(cv::Point(rect.x + (rect.width * 0.5),
 						rect.y + (rect.height * 0.5))));
 			}
 		}
 	}
 }
 
-void DetectionFilter::_TrackObjects(std::vector<DetectedObj>& frameObjs)
+void DetectionFilter::_TrackObjects(std::vector<DetectableObj>& frameObjs)
 {
 	if (_detectedObjs.empty() && !frameObjs.empty())
 		_detectedObjs = frameObjs;

@@ -1,11 +1,11 @@
 #include "video_player.h"
 #include "detection_filter.h"
 
-const char* file_name = "res/test.mp4";
+const char* FILE_NAME = "res/test.mp4";
 
 int main()
 {
-	VideoPlayer player(file_name);
+	VideoPlayer player(FILE_NAME);
 	if (player.ok())
 	{
 		player.SetDebugMode(true);

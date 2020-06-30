@@ -25,19 +25,19 @@ public:
 	void FrameProcessing(cv::Mat& frame, bool debug = false) override;
 
 private:
-	struct DetectedObj
+	struct DetectableObj
 	{
 		bool isChecked = false;
 		int inactiveFrames = 0;
 		std::vector<cv::Point> posBuffer;
 
-		DetectedObj(cv::Point point);
-		DetectedObj(const DetectedObj& obj) = default;
-		DetectedObj(DetectedObj&& obj) noexcept = default;
-		~DetectedObj() = default;
+		DetectableObj(cv::Point point);
+		DetectableObj(const DetectableObj& obj) = default;
+		DetectableObj(DetectableObj&& obj) noexcept = default;
+		~DetectableObj() = default;
 
-		DetectedObj& operator=(const DetectedObj& obj) = default;
-		DetectedObj& operator=(DetectedObj&& obj) noexcept = default;
+		DetectableObj& operator=(const DetectableObj& obj) = default;
+		DetectableObj& operator=(DetectableObj&& obj) noexcept = default;
 	};
 
 	const int INFO_TEXT_POS_OFFSET = 25;
@@ -51,7 +51,7 @@ private:
 	const cv::Scalar COLOR_WHITE = cv::Scalar(255.0, 255.0, 255.0);
 
 	const size_t MAX_POS_BUFFER_SIZE = 2;
-	const unsigned int MAX_INACTIVE_FRAME = 15;
+	const unsigned int MAX_INACTIVE_FRAME = 8;
 	const unsigned int MIN_RECT_W = 25;
 	const unsigned int MIN_RECT_H = 25;
 	const double MIN_DIST_BETWEEN_POINTS = 35.0;
@@ -68,10 +68,10 @@ private:
 	cv::Mat _dilateStruct = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
 	cv::Mat _sub;
 
-	std::vector<DetectedObj> _detectedObjs;
+	std::vector<DetectableObj> _detectedObjs;
 
-	void _FindObjects(const cv::Mat& mat, std::vector<DetectedObj>& frameObjs);
-	void _TrackObjects(std::vector<DetectedObj>& frameObjs);
+	void _FindObjects(const cv::Mat& mat, std::vector<DetectableObj>& frameObjs);
+	void _TrackObjects(std::vector<DetectableObj>& frameObjs);
 	void _CheckLineIntersection(const int hLine);
 	void _Info(cv::Mat& frame);
 	void _DebugInfo(cv::Mat& frame);
